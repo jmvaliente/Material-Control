@@ -1,0 +1,15 @@
+[ ] SetUp
+    [X] Install Dependencies
+    [X] Basic Config, Server Express
+    [ ] Basic Config, Mongoo Conection
+    [ ] Check correct funcion
+[ ]Routes
+    [ ] Define routes API
+    [ ] Define Secret areas
+[ ] Create DataBase Models
+    [ ] Create Model User
+    [ ] Create Model Item
+[ ]Session
+    [ ] Make it work
+[ ]Auth
+    [ ] Define login
