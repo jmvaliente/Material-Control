@@ -31,8 +31,8 @@ router.post("/login", (req, res) => {
         if (err) {
           res.json({ msg: "Error Token", data: req.body });
         } else {
-          res.json({ msg: "Autenticator True", data: req.body, token: token });
           req.session.token = token;
+          res.json({ msg: "Autenticator True", data: req.body, token: token });
         }
       }
     );
@@ -70,11 +70,21 @@ router.get("/getitem/:id", (req, res) => {
 });
 
 // Report Data PRIVATE access
-router.get("/report", (req, res) => {
-  //private
-  res.json({
-    msg: "report OK",
-  });
+router.get("/report", secure.veryfyToken, (req, res) => {
+  req.token = req.session.token;
+  jwt.verify(
+    req.token,
+    process.env.JWT_SECRET_KEY || "wordSecret",
+    (err, data) => {
+      if (err) {
+        res.sendStatus(403);
+      } else {
+        res.json({
+          msg: data,
+        });
+      }
+    }
+  );
 });
 
 module.exports = router;
