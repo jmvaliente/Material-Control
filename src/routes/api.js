@@ -12,13 +12,7 @@ const db = [
 //TEMP
 
 function checkUserPass(usr, pass) {
-  for (let i = 0; i <= db.length; i++) {
-    if (usr === db[i].user && pass === db[i].pass) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  return db.find((el) => usr === el.user && pass === el.pass);
 }
 
 router.get("/", (req, res) => {
