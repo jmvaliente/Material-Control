@@ -6,6 +6,7 @@ const cors = require("cors");
 require("dotenv").config();
 
 //mongoose conection
+require("./config/mongoConfig");
 
 const app = express();
 const api = require("./routes/api.js");
