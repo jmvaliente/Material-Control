@@ -1,20 +1,13 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const router = express.Router();
+const userActions = require("../libs/userActions");
+const user = require("../models/user.js");
+
 //middleware
 const secure = require("../libs/secure.js");
 
-//TEMP
-const db = [
-  { user: "admin", pass: "12345" },
-  { user: "user", pass: "123" },
-];
-//TEMP
-
-function checkUserPass(usr, pass) {
-  return db.find((el) => usr === el.user && pass === el.pass);
-}
-
+//Routes
 router.get("/", (req, res) => {
   res.json({
     msg: "Api Test",
@@ -22,8 +15,8 @@ router.get("/", (req, res) => {
 });
 
 //User
-router.post("/login", (req, res) => {
-  if (checkUserPass(req.body.user, req.body.pass)) {
+router.post("/login", async (req, res) => {
+  if (await userActions.checkIfUserExist(req.body.email)) {
     jwt.sign(
       { data: req.body },
       process.env.JWT_SECRET_KEY || "wordSecret",
@@ -37,14 +30,13 @@ router.post("/login", (req, res) => {
       }
     );
   } else {
-    res.json({ msg: "Autentication False", data: req.body });
+    res.json({ msg: "Email no Exist", data: req.body });
   }
 });
 
-router.post("/register", (req, res) => {
-  res.json({
-    msg: "Register OK",
-  });
+router.post("/register", async (req, res) => {
+  let registerUser = await userActions.createNewUser(req.body);
+  res.json(registerUser);
 });
 
 router.get("/user/:id", (req, res) => {

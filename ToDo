@@ -12,6 +12,7 @@
 [ ]Session
     [ ] Make it work
 [ ]Auth
-    [ ] Define login
-    [ ] Create Verification Token
-    [ ] implement middleware in routes
+    [X] Define login
+    [X] Create Verification Token
+    [X] implement middleware in routes
+    [X] Crypt compare
