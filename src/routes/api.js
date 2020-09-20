@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 const router = express.Router();
 const userActions = require("../libs/userActions");
 const user = require("../models/user.js");
+const password = require("../libs/password.js");
 
 //middleware
 const secure = require("../libs/secure.js");
@@ -16,7 +17,7 @@ router.get("/", (req, res) => {
 
 //User
 router.post("/login", async (req, res) => {
-  if (await userActions.checkIfUserExist(req.body.email)) {
+  if (await userActions.checkIfUserExist(req.body)) {
     jwt.sign(
       { data: req.body },
       process.env.JWT_SECRET_KEY || "wordSecret",
@@ -25,12 +26,16 @@ router.post("/login", async (req, res) => {
           res.json({ msg: "Error Token", data: req.body });
         } else {
           req.session.token = token;
-          res.json({ msg: "Autenticator True", data: req.body, token: token });
+          res.json({
+            msg: "Autenticator True",
+            data: req.body,
+            token: token,
+          });
         }
       }
     );
   } else {
-    res.json({ msg: "Email no Exist", data: req.body });
+    res.json({ msg: "Email or Password no is correct", data: req.body });
   }
 });
 
