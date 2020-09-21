@@ -1,9 +1,8 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const router = express.Router();
-const userActions = require("../libs/userActions");
 const user = require("../models/user.js");
-const password = require("../libs/password.js");
+
+const userController = require("../controllers/user.controller.js");
 
 //middleware
 const secure = require("../libs/secure.js");
@@ -16,32 +15,13 @@ router.get("/", (req, res) => {
 });
 
 //User
+
 router.post("/login", async (req, res) => {
-  if (await userActions.checkIfUserExist(req.body)) {
-    jwt.sign(
-      { data: req.body },
-      process.env.JWT_SECRET_KEY || "wordSecret",
-      (err, token) => {
-        if (err) {
-          res.json({ msg: "Error Token", data: req.body });
-        } else {
-          req.session.token = token;
-          res.json({
-            msg: "Autenticator True",
-            data: req.body,
-            token: token,
-          });
-        }
-      }
-    );
-  } else {
-    res.json({ msg: "Email or Password no is correct", data: req.body });
-  }
+  userController.login(req, res);
 });
 
 router.post("/register", async (req, res) => {
-  let registerUser = await userActions.createNewUser(req.body);
-  res.json(registerUser);
+  userController.createNewUser(req, res);
 });
 
 router.get("/user/:id", (req, res) => {
@@ -67,21 +47,8 @@ router.get("/getitem/:id", (req, res) => {
 });
 
 // Report Data PRIVATE access
-router.get("/report", secure.veryfyToken, (req, res) => {
-  req.token = req.session.token;
-  jwt.verify(
-    req.token,
-    process.env.JWT_SECRET_KEY || "wordSecret",
-    (err, data) => {
-      if (err) {
-        res.sendStatus(403);
-      } else {
-        res.json({
-          msg: data,
-        });
-      }
-    }
-  );
-});
+router.get("/report", secure.veryfyToken, (req, res) =>
+  res.json({ msg: "Access Ok" })
+);
 
 module.exports = router;

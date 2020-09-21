@@ -1,12 +1,11 @@
-function veryfyToken(req, res, next) {
-  const beareHeader = req.header["autorization"];
+const jwt = require("jsonwebtoken");
 
-  if (typeof beareHeader !== "undefined") {
-    const bearer = beareHeader.split(" ");
-    const bearerToken = bearer[1];
+function veryfyToken(req, res, next) {
+  try {
+    jwt.verify(req.session.token, process.env.JWT_SECRET_KEY || "wordSecret");
     next();
-  } else {
-    next();
+  } catch (error) {
+    return res.status(401).json({ msg: "Unauthorized" });
   }
 }
 
