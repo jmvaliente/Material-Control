@@ -33,3 +33,5 @@ app.listen(process.env.PORT || 3000, () => {
     `Server running in port: ${process.env.PORT ? process.env.PORT : 3000}`
   );
 });
+
+module.exports = app;

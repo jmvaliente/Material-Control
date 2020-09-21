@@ -26,7 +26,6 @@ userSchema.pre("save", function (next) {
 });
 
 userSchema.statics.checkPassword = async (pw, hash) => {
-  console.log(pw, hash);
   return await bcrypt.compare(pw, hash);
 };
 

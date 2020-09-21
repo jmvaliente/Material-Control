@@ -13,7 +13,6 @@ async function createNewUser(req, res) {
 
 async function login(req, res) {
   let getUserDB = await getUser(req.body);
-  console.log(getUserDB);
   if (!getUserDB) return res.status(401).json({ msg: "Email/Password error" });
 
   let checkPassword = await user.checkPassword(
