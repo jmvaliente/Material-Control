@@ -28,7 +28,7 @@ router.patch("/edititem/:id", secure.veryfyToken, async (req, res, next) => awai
 
 router.get("/getitem/:id", async (req, res) => await itemController.getItem(req, res));
 
-router.delete("/deleteitem/:id", async (req, res) => await itemController.deleteItem(req, res));
+router.delete("/deleteitem/:id", secure.veryfyToken, async (req, res) => await itemController.deleteItem(req, res));
 
 // Report Data PRIVATE access
 router.get("/report", secure.veryfyToken, (req, res) => res.json({ msg: "Access Ok" }));
