@@ -18,10 +18,35 @@ let upload = multer({
 //upload Files
 
 async function addItem(req, res) {
-    upload(req, res, (err) => {
-        if (err) return res.status(500).json({ msg: err })
-    })
-    return res.status(200).json({ msg: "add new Item" })
+
+    try {
+        let newItem = await new item(req.body)
+        let saveItem = await newItem.save()
+        return res.status(201).json({ msg: saveItem })
+
+    } catch (error) {
+        return res.status(403).json({ msg: "error Creating Item" })
+    }
+
 }
 
-module.exports = { addItem }
+async function uploadfile(req, res) {
+    upload(req, res, (err) => {
+        if (err) return res.status(500).json({ msg: err })
+
+    })
+
+}
+
+async function editItem(req, res) {
+
+    try {
+        let modItem = await item.findByIdAndUpdate(req.params.id, req.body, { new: true })
+        return res.status(201).json({ msg: 'item update', data: modItem })
+    } catch (error) {
+        return res.status(403).json({ msg: 'error update' })
+    }
+
+}
+
+module.exports = { addItem, editItem }

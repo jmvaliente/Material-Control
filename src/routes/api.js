@@ -23,6 +23,8 @@ router.get("/user/:id", (req, res) => res.json({ msg: "get user OK" }));
 
 router.post("/additem", secure.veryfyToken, async (req, res, next) => await itemController.addItem(req, res));
 
+router.post("/edititem/:id", secure.veryfyToken, async (req, res, next) => await itemController.editItem(req, res))
+
 router.get("/getitem/:id", (req, res) => res.json({ msg: "ger item" }));
 
 // Report Data PRIVATE access
