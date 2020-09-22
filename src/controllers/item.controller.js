@@ -4,7 +4,7 @@ const multer = require('multer') // upload file
 
 //upload files
 let storagePdf = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, './static/manuales'),
+    destination: (req, file, cb) => cb(null, path.join(__dirname, '../static/manuales')),
     filename: (req, file, cb) => cb(null, file.fieldname + Date.now() + '.pdf')
 })
 
@@ -30,13 +30,15 @@ async function addItem(req, res) {
 
 }
 
+/*  TEMP UPLOAD FILES
+
 async function uploadfile(req, res) {
     upload(req, res, (err) => {
         if (err) return res.status(500).json({ msg: err })
-
     })
 
 }
+ */
 
 async function editItem(req, res) {
 
@@ -49,4 +51,24 @@ async function editItem(req, res) {
 
 }
 
-module.exports = { addItem, editItem }
+async function getItem(req, res) {
+    try {
+        let getItem = await item.findById(req.params.id)
+        if (!getItem) return res.status(404).json({ msg: 'Item not Found' })
+        return res.status(200).json({ msg: 'Get Item Success', data: getItem })
+    } catch (error) {
+        return res.status(400).json({ msg: 'Error get item' })
+    }
+}
+
+async function deleteItem(req, res) {
+    try {
+        let delItem = await item.findByIdAndRemove(req.params.id)
+        if (!delItem) return res.status(404).json({ msg: 'Item not Found' })
+        return res.status(200).json({ msg: 'Delete success', data: delItem })
+    } catch (error) {
+        return res.status(400).json({ msg: 'Error Delete' })
+    }
+}
+
+module.exports = { addItem, editItem, getItem, deleteItem }

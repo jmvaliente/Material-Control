@@ -19,13 +19,16 @@ router.post("/register", async (req, res) => await userController.createNewUser(
 
 router.get("/user/:id", (req, res) => res.json({ msg: "get user OK" }));
 
+
 //item
 
 router.post("/additem", secure.veryfyToken, async (req, res, next) => await itemController.addItem(req, res));
 
 router.post("/edititem/:id", secure.veryfyToken, async (req, res, next) => await itemController.editItem(req, res))
 
-router.get("/getitem/:id", (req, res) => res.json({ msg: "ger item" }));
+router.get("/getitem/:id", async (req, res) => await itemController.getItem(req, res));
+
+router.delete("/deleteitem/:id", async (req, res) => await itemController.deleteItem(req, res));
 
 // Report Data PRIVATE access
 router.get("/report", secure.veryfyToken, (req, res) => res.json({ msg: "Access Ok" }));
