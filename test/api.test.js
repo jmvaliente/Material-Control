@@ -6,13 +6,38 @@ const expect = require('chai').expect;
 
 const app = require("../src/index.js");
 
-let cookie;
+let cookie = {}
 const data = {
   existData: {
     email: "prueba@prueba2",
     pass: "pruebas2",
+    name: "Pepe",
+    emailRandom: `${Math.random(1000)}@email.com`
   },
 };
+
+describe("POST api/register", () => {
+  it("Register new user", (done) => {
+    request(app)
+      .post("/api/register")
+      .set("Accept", "application/json")
+      .send({ "email": data.existData.emailRandom, "pass": data.existData.pass, "name": data.existData.name })
+      .expect("Content-Type", /json/)
+      .expect(201)
+      .end(done)
+  })
+
+  it("Cant register existing user", (done) => {
+    request(app)
+      .post('/api/register')
+      .set("Accept", "application/json")
+      .send({ "email": data.existData.email, "pass": data.existData.pass, "name": data.existData.name })
+      .expect("Content-Type", /json/)
+      .expect(403)
+      .end(done)
+  })
+
+})
 
 describe("POST /api/login", () => {
   it("Give access when the user entered is correct", (done) => {
@@ -22,13 +47,10 @@ describe("POST /api/login", () => {
       .send({ "email": data.existData.email, "pass": data.existData.pass })
       .expect("Content-Type", /json/)
       .expect('set-cookie', /connect.sid/)
-      //.expect('set-cookie', /userData/)
       .expect(200)
       .end(function (err, res) {
         if (err) done(err)
-        //expect(res.body.message).to.be.a("string")
-        //expect(res.body.message).to.be.equal("user acess granted")
-        //cookie = { name: res.headers['set-cookie'][1].toString().split('=')[0], value: res.headers['set-cookie'][1].toString().split('=')[1].split(';')[0] }
+        cookie = { name: res.headers['set-cookie'].toString().split('=')[0], value: res.headers['set-cookie'].toString().split('=')[1].split(';')[0] }
         done()
       })
   });
@@ -55,5 +77,14 @@ describe("POST /api/login", () => {
   })
 
 
+  it("access to report area", (done) => {
+    request(app)
+      .get("/api/report")
+      .set("Cookie", `${cookie.name}=${cookie.value}`)
+      .set("Accept", "aplication/json")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end(done)
+  })
 
 });
