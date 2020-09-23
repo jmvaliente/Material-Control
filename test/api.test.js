@@ -56,6 +56,25 @@ describe("POST /api/login", () => {
       })
   });
 
+  it("Access to personal area", (done) => {
+    request(app)
+      .get("/api/user/account")
+      .set("Cookie", `${cookie.name}=${cookie.value}`)
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(200)
+      .end(done)
+  })
+
+  it("Cant Access to personal area", (done) => {
+    request(app)
+      .get("/api/user/account")
+      .set("Accept", "application/json")
+      .expect("Content-Type", /json/)
+      .expect(401)
+      .end(done)
+  })
+
 
   it("Do not give access whe the user or password entered are incorrect", (done) => {
     request(app)
