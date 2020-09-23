@@ -17,7 +17,7 @@ router.post("/login", async (req, res) => await userController.login(req, res));
 
 router.post("/register", async (req, res) => await userController.createNewUser(req, res));
 
-router.get("/user/:id", (req, res) => res.json({ msg: "get user OK" }));
+router.get("/user/edit", secure.veryfyToken, async (req, res) => await userController.userAccount(req, res));
 
 
 //item

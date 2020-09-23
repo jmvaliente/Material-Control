@@ -1,5 +1,4 @@
 const user = require("../models/user.js");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 async function createNewUser(req, res) {
@@ -20,7 +19,7 @@ async function login(req, res) {
 
   let token = jwt.sign({ data: req.body }, process.env.JWT_SECRET_KEY || "wordSecret");
   if (!token) return res.status(401).json({ msg: "auth error" });
-
+  req.session.email = getUserDB.email
   req.session.token = token;
   return res.status(200).json({ msg: "Loggin correct", data: token });
 }
@@ -30,9 +29,15 @@ async function editUser(email, modData) {
   return data
 }
 
+async function userAccount(req, res) {
+  let findUser = await user.findOne({ email: req.session.email }, 'name email -_id')
+  if (!findUser) return res.status(403).json({ msg: "Unautorized" })
+  return res.status(200).json({ msg: "User Account", data: findUser })
+}
+
 async function getUser(data) {
   let findUserExist = await user.findOne({ email: data.email });
   return findUserExist;
 }
 
-module.exports = { createNewUser, login };
+module.exports = { createNewUser, login, userAccount };

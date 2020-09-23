@@ -11,6 +11,8 @@ let itemSchema = new Schema({
     pdf: String,
     stock_limit: Number,
     warning: Boolean
+}, {
+    timestamps: true
 })
 
 module.exports = mongoose.model("item", itemSchema)
