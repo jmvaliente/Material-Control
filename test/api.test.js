@@ -10,7 +10,7 @@ let cookie = {}
 const data = {
   existData: {
     email: "prueba@prueba2",
-    pass: "pruebas2",
+    password: "pruebas2",
     name: "Pepe",
     emailRandom: `${Math.random(1000)}@email.com`,
     itemId: ""
@@ -22,7 +22,7 @@ describe("POST api/register", () => {
     request(app)
       .post("/api/register")
       .set("Accept", "application/json")
-      .send({ "email": data.existData.emailRandom, "pass": data.existData.pass, "name": data.existData.name })
+      .send({ "email": data.existData.emailRandom, "password": data.existData.password, "name": data.existData.name })
       .expect("Content-Type", /json/)
       .expect(201)
       .end(done)
@@ -32,7 +32,7 @@ describe("POST api/register", () => {
     request(app)
       .post('/api/register')
       .set("Accept", "application/json")
-      .send({ "email": data.existData.email, "pass": data.existData.pass, "name": data.existData.name })
+      .send({ "email": data.existData.email, "password": data.existData.password, "name": data.existData.name })
       .expect("Content-Type", /json/)
       .expect(403)
       .end(done)
@@ -45,7 +45,7 @@ describe("POST /api/login", () => {
     request(app)
       .post("/api/login")
       .set("Accept", "application/json")
-      .send({ "email": data.existData.email, "pass": data.existData.pass })
+      .send({ "email": data.existData.email, "password": data.existData.password })
       .expect("Content-Type", /json/)
       .expect('set-cookie', /connect.sid/)
       .expect(200)
@@ -61,7 +61,7 @@ describe("POST /api/login", () => {
     request(app)
       .post("/api/login")
       .set("Accept", "application/json")
-      .send({ "email": "wronguser@wrongmail.com", "pw": "wrongpassword" })
+      .send({ "email": "wronguser@wrongmail.com", "password": "wrongpassword" })
       .expect("Content-Type", /json/)
       .expect('set-cookie', /connect.sid/)
       .expect(401)
@@ -151,6 +151,16 @@ describe("PATCH/DELETE Item", () => {
       .end(done)
   })
 
+  it("Cant update Item", (done) => {
+    request(app)
+      .patch(`/api/edititem/${data.existData.itemId}`)
+      .set("Accept", "application/json")
+      .send({ "name": "Test Name", "description": "Description Text" })
+      .expect("Content-Type", /json/)
+      .expect(401)
+      .end(done)
+  })
+
   it("Delete Item", (done) => {
     request(app)
       .delete(`/api/deleteitem/${data.existData.itemId}`)
@@ -160,5 +170,15 @@ describe("PATCH/DELETE Item", () => {
       .expect(200)
       .end(done)
   })
+
+  it("Cant Delete Item", (done) => {
+    request(app)
+      .delete(`/api/deleteitem/${data.existData.itemId}`)
+      .set("Accept", "Application/json")
+      .expect("Content-Type", /json/)
+      .expect(401)
+      .end(done)
+  })
+
 
 })

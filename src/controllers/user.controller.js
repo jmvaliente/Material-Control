@@ -15,7 +15,7 @@ async function login(req, res) {
   let getUserDB = await getUser(req.body);
   if (!getUserDB) return res.status(401).json({ msg: "Email/Password error" });
 
-  let checkPassword = await user.checkPassword(req.body.pass, getUserDB.password);
+  let checkPassword = await user.checkPassword(req.body.password, getUserDB.password);
   if (!checkPassword) return res.status(401).json({ msg: "Email/Password error" });
 
   let token = jwt.sign({ data: req.body }, process.env.JWT_SECRET_KEY || "wordSecret");
