@@ -1,7 +1,20 @@
 const user = require("../models/user.js");
 const jwt = require("jsonwebtoken");
+const { body, validationResult } = require('express-validator')
 
 async function createNewUser(req, res) {
+  //Validator//
+  await body('email').isEmail().withMessage('Email is not Valid').run(req)
+  await body('password')
+    .isLength({min: 6, max:15}).withMessage('Password min 6 character and 15 character max')
+    .custom(value =>!/\s/.test(value)).withMessage('No space are allowed in the password')
+    .run(req)
+  await body('name').isLength({min:3, max:15}).withMessage('name min 3 character and 15 character max').trim().escape().run(req)
+
+  const result = validationResult(req)
+  if(!result.isEmpty()) return res.status(400).json({msg: result.array()})
+  //Validator//
+
   let getUserDb = await getUser(req.body);
   if (getUserDb) return res.status(403).json({ msg: "User exist in database" });
 
